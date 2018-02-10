@@ -24,57 +24,40 @@ class DeepLyricsGen:
 
         return text
 
-    def get_words(self, text):
+    def create_chars_to_int_mappings(self, text):
+        self.chars = sorted(list(set(text)))
+        self.char_to_int = dict((c, i) for i, c in enumerate(self.chars))
+        self.int_to_char = dict((i, c) for i, c in enumerate(self.chars))
 
-        self.words = []
-        current_word = ''
-
-        for char in text:
-            if char == ' ':
-                self.words.append(current_word)
-                current_word = ''
-
-            if char == '\n':
-                self.words.append(current_word)
-                current_word = ''
-                self.words.append('\n')
-
-            if char == '.' or char == ',' or char == '"' or char == '-' or char == '(' or char == ')' or char == '?' or char == '!' or char == '&' or char == ':' or char == ';': 
-                continue
-
-            current_word = current_word + char
-        
-        self.words
-
-    def create_word_to_int_mappings(self):
-        self.unique_words = sorted(list(set(self.words)))
-        self.word_to_int = dict((c, i) for i, c in enumerate(self.unique_words))
-        self.int_to_word = dict((i, c) for i, c in enumerate(self.unique_words))
-
-    def summarize_data(self):
-        self.words_count = len(self.words)
-        self.n_vocab = len(self.unique_words)
-        print ("Total Words: " + str(self.words_count))
+    def summarize_data(self, text):
+        self.n_chars = len(text)
+        self.n_vocab = len(self.chars)
+        print ("Total Characters: ", self.n_chars)
         print ("Total Vocab: ", self.n_vocab)
 
-    def prepare_data(self):
-        for i in range(0, self.words_count - self.seq_length, 1):
-            seq_in = self.words[i:i + self.seq_length]
-            seq_out = self.words[i + self.seq_length]
-            self.dataX.append([self.word_to_int[word] for word in seq_in])
-            self.dataY.append(self.word_to_int[seq_out])
+    def prepare_data(self, text):
+        # prepare the dataset of input to output pairs encoded as integers
+        seq_length = 100
+        dataX = []
+        dataY = []
 
-        n_patterns = len(self.dataX)
+        for i in range(0, self.n_chars - seq_length, 1):
+            seq_in = text[i:i + seq_length]
+            seq_out = text[i + seq_length]
+            dataX.append([self.char_to_int[char] for char in seq_in])
+            dataY.append(self.char_to_int[seq_out])
+
+        n_patterns = len(dataX)
         print ("Total Patterns: ", n_patterns)
 
         # reshape X to be [samples, time steps, features]
-        self.X = numpy.reshape(self.dataX, (n_patterns, self.seq_length, 1))
+        self.X = numpy.reshape(dataX, (n_patterns, seq_length, 1))
 
         # normalize
         self.X = self.X / float(self.n_vocab)
 
         # one hot encode the output variable
-        self.y = np_utils.to_categorical(self.dataY)
+        self.y = np_utils.to_categorical(dataY)
 
     def create_model(self):
         model = Sequential()
@@ -90,10 +73,9 @@ class DeepLyricsGen:
     def train(self):
 
         text = self.open_text()
-        self.get_words(text)
-        self.create_word_to_int_mappings()
-        self.summarize_data()
-        self.prepare_data()
+        self.create_chars_to_int_mappings(text)
+        self.summarize_data(text)
+        self.prepare_data(text)
 
         model = self.create_model()
 
@@ -106,10 +88,9 @@ class DeepLyricsGen:
     def generate(self, weight):
 
         text = self.open_text()
-        self.get_words(text)
-        self.create_word_to_int_mappings()
-        self.summarize_data()
-        self.prepare_data() 
+        self.create_chars_to_int_mappings(text)
+        self.summarize_data(text)
+        self.prepare_data(text) 
 
         model = self.create_model()
 
@@ -119,7 +100,7 @@ class DeepLyricsGen:
         start = numpy.random.randint(0, len(self.dataX)-1)
         pattern = self.dataX[start]
         print ("Seed:")
-        print ("\"", ''.join([self.int_to_word[value] for value in pattern]), "\"")
+        print ("\"", ''.join([self.int_to_char[value] for value in pattern]), "\"")
 
         # generate characters
         for i in range(150):
@@ -127,8 +108,8 @@ class DeepLyricsGen:
             x = x / float(self.n_vocab)
             prediction = model.predict(x, verbose=0)
             index = numpy.argmax(prediction)
-            result = self.int_to_word[index]
-            seq_in = [self.int_to_word[value] for value in pattern]
+            result = self.int_to_char[index]
+            seq_in = [self.int_to_char[value] for value in pattern]
             sys.stdout.write(result)
             pattern.append(index)
             pattern = pattern[1:len(pattern)]

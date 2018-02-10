@@ -1,6 +1,10 @@
 # neural network weights
 *.hdf5
 
+# floydhub
+.floydexpt
+.floydignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
