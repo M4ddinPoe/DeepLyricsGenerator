@@ -1,3 +1,7 @@
+# folder
+Input/
+Output/
+
 # neural network weights
 *.hdf5
 
