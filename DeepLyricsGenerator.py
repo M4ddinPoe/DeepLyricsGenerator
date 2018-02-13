@@ -19,7 +19,7 @@ class DeepLyricsGen:
         self.dataY = []
 
     def open_text(self):
-        text = open(self.filename).read()
+        text = open(self.filename, encoding='utf-8').read()
         text = text.lower()
 
         return text
