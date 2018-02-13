@@ -5,12 +5,12 @@ from DeepLyricsGenerator import DeepLyricsGen
 method = sys.argv[1]
 filename = "lyrics.txt"
 
-if len(sys.argv) >= 2:
+if len(sys.argv) >= 3:
     filename = sys.argv[2]
 
-weight = "output/weights-improvement-07-6.0545.hdf5"
+weight = ""
 
-if len(sys.argv) >= 3:
+if len(sys.argv) >= 4:
     weight = sys.argv[3]
 
 generator = DeepLyricsGen(filename)
