@@ -64,8 +64,6 @@ class DeepLyricsGen:
         model.add(Dropout(0.4))
         model.add(LSTM(512))
         model.add(Dropout(0.4))
-        model.add(LSTM(128))
-        model.add(Dropout(0.4))
         model.add(Dense(self.y.shape[1], activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam')
 

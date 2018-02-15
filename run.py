@@ -9,7 +9,8 @@ weight = ''
 
 try:
     opts, args = getopt.getopt(sys.argv[1:],"hm:f:e:w:")
-except getopt.GetoptError:
+except getopt.GetoptError as e:
+    print (e)
     print ('run.py -m <method (train|generate)> -f <textfile> -e <epochs> -w <weights>')
     sys.exit(2)
 
