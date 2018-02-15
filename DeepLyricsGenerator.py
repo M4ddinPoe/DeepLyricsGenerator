@@ -60,12 +60,14 @@ class DeepLyricsGen:
 
     def create_model(self):
         model = Sequential()
-        model.add(LSTM(256, input_shape=(self.X.shape[1], self.X.shape[2]), return_sequences=True))
+        model.add(LSTM(512, input_shape=(self.X.shape[1], self.X.shape[2]), return_sequences=True))
         model.add(Dropout(0.4))
-        model.add(LSTM(256))
+        model.add(LSTM(512))
+        model.add(Dropout(0.4))
+        model.add(LSTM(128))
         model.add(Dropout(0.4))
         model.add(Dense(self.y.shape[1], activation='softmax'))
-        model.compile(loss='categorical_crossentropy', optimizer='Adam')
+        model.compile(loss='categorical_crossentropy', optimizer='adam')
 
         return model
 
@@ -85,7 +87,7 @@ class DeepLyricsGen:
         callbacks_list = [checkpoint]
 
         # fit the model
-        model.fit(self.X, self.y, epochs=30, batch_size=96, callbacks=callbacks_list)
+        model.fit(self.X, self.y, epochs=30, batch_size=64, callbacks=callbacks_list)
 
     def generate(self, weight):
 
@@ -97,7 +99,7 @@ class DeepLyricsGen:
         model = self.create_model()
 
         model.load_weights(weight)
-        model.compile(loss='categorical_crossentropy', optimizer='Adam')
+        model.compile(loss='categorical_crossentropy', optimizer='adam')
 
         start = numpy.random.randint(0, len(self.dataX)-1)
         pattern = self.dataX[start]
@@ -105,7 +107,7 @@ class DeepLyricsGen:
         print ("\"", ''.join([self.int_to_char[value] for value in pattern]), "\"")
 
         # generate characters
-        for i in range(1000):
+        for i in range(500):
             x = numpy.reshape(pattern, (1, len(pattern), 1))
             x = x / float(self.n_vocab)
             prediction = model.predict(x, verbose=0)

@@ -2,22 +2,45 @@ import sys
 import getopt
 from DeepLyricsGenerator import DeepLyricsGen
 
-method = sys.argv[1]
-filename = "lyrics.txt"
+method = ''
+filename = 'lyrics.txt'
+epochs = 30
+weight = ''
 
-if len(sys.argv) >= 3:
-    filename = sys.argv[2]
+try:
+    opts, args = getopt.getopt(sys.argv[1:],"hm:f:e:w:")
+except getopt.GetoptError:
+    print ('run.py -m <method (train|generate)> -f <textfile> -e <epochs> -w <weight>')
+    sys.exit(2)
 
-weight = ""
+for opt, arg in opts:
+    if opt == '-h':
+        print ('run.py -m <method (train|generate)> -f <textfile> -e <epochs> -w <weight>')
+        sys.exit()
+    elif opt in ("-m"):
+        method = arg
+    elif opt in ("-f"):
+        filename = arg
+    elif opt in ("-e"):
+        epochs = int(arg)
+    elif opt in ("-w"):
+        weight = arg
 
-if len(sys.argv) >= 4:
-    weight = sys.argv[3]
+if not method:
+    print ('Method not specified! Please specify argument -m train|generate')
+    sys.exit()
 
 generator = DeepLyricsGen(filename)
 
-if sys.argv[1] == 'generate':
+if method == 'generate':
+    
+    if not weight:
+        print ('Weight not specified! You must specify a weight to generate texts: -w <weight>')
+        sys.exit()
+
     generator.generate(weight)
-elif sys.argv[1] == 'train':
+elif method == 'train':
     generator.train(weight)
 else:
     print ('Selecte train or generate to run')
+    
