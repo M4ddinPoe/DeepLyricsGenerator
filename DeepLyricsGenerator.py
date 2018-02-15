@@ -107,7 +107,7 @@ class DeepLyricsGen:
         print ("\"", ''.join([self.int_to_char[value] for value in pattern]), "\"")
 
         # generate characters
-        for i in range(500):
+        for i in range(600):
             x = numpy.reshape(pattern, (1, len(pattern), 1))
             x = x / float(self.n_vocab)
             prediction = model.predict(x, verbose=0)

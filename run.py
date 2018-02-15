@@ -10,12 +10,12 @@ weight = ''
 try:
     opts, args = getopt.getopt(sys.argv[1:],"hm:f:e:w:")
 except getopt.GetoptError:
-    print ('run.py -m <method (train|generate)> -f <textfile> -e <epochs> -w <weight>')
+    print ('run.py -m <method (train|generate)> -f <textfile> -e <epochs> -w <weights>')
     sys.exit(2)
 
 for opt, arg in opts:
     if opt == '-h':
-        print ('run.py -m <method (train|generate)> -f <textfile> -e <epochs> -w <weight>')
+        print ('run.py -m <method (train|generate)> -f <textfile> -e <epochs> -w <weights>')
         sys.exit()
     elif opt in ("-m"):
         method = arg
