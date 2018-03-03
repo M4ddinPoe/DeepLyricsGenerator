@@ -41,7 +41,7 @@ if method == 'generate':
 
     generator.generate(weight)
 elif method == 'train':
-    generator.train(weight)
+    generator.train(epochs, weight)
 else:
     print ('Selecte train or generate to run')
     
