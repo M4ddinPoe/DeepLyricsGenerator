@@ -67,12 +67,14 @@ class DeepLyricsGen:
         lines = text.splitlines(keepends=True)
         self.seq_length = len(max(lines, key=len))
 
+        text = ''
+
         for line in lines:
             if len(line) < self.seq_length:
                 line = line[:-1]
                 for i in range(0, self.seq_length - len(line) - 1):
                     line = line + '0'
-                line = line + '\n'
+            text = text + line + '\n'
 
         for i in range(0, self.n_chars - self.seq_length, 1):
             seq_in = text[i:i + self.seq_length]
@@ -126,7 +128,7 @@ class DeepLyricsGen:
         text = self.open_text()
         self.create_chars_to_int_mappings(text)
         self.summarize_data(text)
-        self.prepare_data(text)
+        self.prepare_data_padded(text)
 
         model = self.create_model()
 
