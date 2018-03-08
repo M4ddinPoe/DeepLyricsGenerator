@@ -117,7 +117,7 @@ class DeepLyricsGen:
         if weight:
             model.load_weights(weight)
 
-        checkpoint = ModelCheckpoint(self.filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
+        checkpoint = ModelCheckpoint(self.filepath, monitor='loss', verbose=1, save_best_only=False, mode='min')
         callbacks_list = [checkpoint]
 
         # fit the model
