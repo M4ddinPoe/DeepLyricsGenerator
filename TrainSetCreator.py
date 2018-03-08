@@ -8,13 +8,17 @@ mypath = 'Albums'
 files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
 start = 0
-end = len(files)
+end = len(files) - 1
 
 milliseconds = int(round(time.time() * 1000))
 random.seed(milliseconds)
 
 while start < end:
     start = random.randint(start, start + 35)
+
+    if start > end:
+        start = end
+
     file = files[start]
 
     try:

@@ -33,7 +33,7 @@ def remove_long_lines(text):
     lines = text.splitlines(keepends=True)
 
     for line in lines:
-        if len(line) < 50:
+        if len(line) < 70:
             cleaned_text = cleaned_text + line
 
     return cleaned_text
